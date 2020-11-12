@@ -77,13 +77,11 @@ Route::post('/coupon/test','CouponController@test');
 
 
 //微信
-Route::prefix('/wx')->group(function(){
-    Route::get('/','WxController@index');       //接入
-    Route::post('/','WxController@wxEvent');
-    Route::get('/token','WxController@getAccessToken');        //获取access_token
-    Route::get('/create_menu','WxController@createMenu');        //创建菜单
-    Route::get('/upload_media','WxController@uploadMedia');        //上传素材
-    Route::get('/send_all','WxController@sendAll');         //群发消息
-
-});
+Route::get("test","TestController@tet");
+Route::get("test1","TestController@test1");
+Route::post("indexs","TestController@index");
+Route::get("access","TestController@access");
+// Route::get("admin","TestController@admin");
+Route::get("code_token","TestController@code_token");
+Route::post("create","TestController@create");//创建菜单
 
