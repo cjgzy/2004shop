@@ -80,6 +80,10 @@ class TestController extends Controller
             $image = new User();
             $image->insert($data);
             $this->med($postarray->MediaId);
+        }else if ($postarray->EventKey=="V1001_TODAY_weather") {
+             $city = $this->geo();
+             $Content = $this->getweather($city);
+             $this->info($postarray,$Content);
         }
         $openid = $postarray->FromUserName;//获取发送方的 openid
         $url = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=".$access_token."&openid=".$openid."&lang=zh_CN";
@@ -117,6 +121,47 @@ class TestController extends Controller
             }
         }
     }
+    public function geo(){
+        $data = '{
+                "resultcode":"200",
+                "reason":"success",
+                "result":
+                {
+                "lat":"40.144161",
+                "lng":"116.284241",
+                "type":"1","address":"北京市昌平区X032(于善街)",
+                "business":"沙河",
+                "citycode":131,
+                "ext":
+                {
+                "country":"中国",
+                "country_code":0,
+                "country_code_iso":"CHN",
+                "country_code_iso2":"CN",
+                "province":"北京市",
+                "city":"北京",
+                "city_level":2,
+                "district":"昌平区",
+                "town":"",
+                "town_code":"",
+                "adcode":"110114",
+                "street":"X032(于善街)",
+                "street_number":"",
+                "direction":"",
+                "distance":""
+                }
+                },"error_code":0
+             }';
+        $data = json_decode($data,true);
+        if($data["resultcode"]==200){
+            if($data["reason"]=="success"){
+                $content =  $data["result"]["ext"]["city"];
+            }
+        }
+        return $content;
+        Log::info("=========城市1=============".$content);
+    }
+
     public function med($MediaId){
         $token=$this->access();
         $url='https://api.weixin.qq.com/cgi-bin/media/get?access_token='.$token.'&media_id='.$MediaId;
@@ -189,8 +234,8 @@ class TestController extends Controller
                         },
                         {
                            "type":"click",
-                           "name":"经典语录",
-                           "key":"V1001_GOOD"
+                           "name":"天气",
+                           "key":"V1001_TODAY_weather"
                         }]
                    }]
              }';
