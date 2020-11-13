@@ -77,11 +77,11 @@ Route::post('/coupon/test','CouponController@test');
 
 
 //微信
-Route::get("test","TestController@tet");
-Route::get("test1","TestController@test1");
-Route::post("indexs","TestController@index");
-Route::get("access","TestController@access");
-Route::get("admin","TestController@admin");
-Route::get("code_token","TestController@code_token");
-Route::post("create","TestController@create");//创建菜单
+Route::any("test","TestController@tet");
+Route::any("test1","TestController@test1");
+Route::any("indexs","TestController@index");
+Route::any("access","TestController@access");
+Route::any("admin","TestController@admin");
+Route::any("code_token","TestController@code_token");
+Route::any("create","TestController@create");//创建菜单
 
