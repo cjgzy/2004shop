@@ -12,9 +12,10 @@ use GuzzleHttp\Client;
 class TestController extends Controller
 {
   public function index(){
-        $res=$this->text();
+        $this->checkSignature();
+        // $res=$this->text();
           //创建菜单
-        $res1=$this->create_moun();
+        // $res1=$this->create_moun();
         // echo $res1;
     } 
       //自动回复
