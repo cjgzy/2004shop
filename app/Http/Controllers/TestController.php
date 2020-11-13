@@ -116,8 +116,25 @@ class TestController extends Controller
     public function med($MediaId){
         $token=$this->access();
         $url='https://api.weixin.qq.com/cgi-bin/media/get?access_token='.$token.'&media_id='.$MediaId;
-        $image=file_get_contents($url);
-        $img=file_put_contents("cat.jpg",$image);
+       $client = new Client();
+        $response = $client->get($url);
+        // 得到头部信息
+        // 从头部信息中取出文件名 将文件名处理为字符串
+        $file_name = $response->getHeader('Content-disposition')[0];
+
+        $file_type = 'static/'.$response->getHeader('Content-Type')[0];
+//        Log::info("=====file_type=====".$file_type);
+        // 判断有无 文件夹 没有 则创建多层文件夹
+        $adddir=$file_type.date("/Ymd/",time());
+        if(!is_dir($adddir)){
+            mkdir($adddir, 0777,true);
+            chmod($adddir, 0777);
+        }
+        $file_name = ltrim($file_name,"attachment; filename=\"");
+        $file_name = rtrim($file_name,'"');
+        $file_path = $adddir.$file_name;
+        $client->get($url,['save_to'=>$file_path]);
+
 
     }
     public function info($postarray,$Content){
