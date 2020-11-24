@@ -85,3 +85,16 @@ Route::any("admin","TestController@admin");
 Route::any("code_token","TestController@code_token");
 Route::any("create","TestController@create");//创建菜单
 
+
+
+Route::get("goods","GoodsController@goods");
+Route::get("api/login","GoodsController@login");
+
+
+
+Route::get("api/test","CateController@test");
+Route::get("api/cate","GoodsController@cate");
+Route::get("api/goodslist","GoodsController@goodslist");
+Route::get("api/cart","GoodsController@cart");
+Route::get("api/detaildo","GoodsController@detaildo");
+Route::post("api/goodslogin","GoodsController@goodslogin");

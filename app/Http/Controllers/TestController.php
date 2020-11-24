@@ -130,8 +130,7 @@ class TestController extends Controller
                 "lat":"40.144161",
                 "lng":"116.284241",
                 "type":"1","address":"北京市昌平区X032(于善街)",
-                "business":"沙河",
-                "citycode":131,
+                "business":"沙河",                "citycode":131,
                 "ext":
                 {
                 "country":"中国",
