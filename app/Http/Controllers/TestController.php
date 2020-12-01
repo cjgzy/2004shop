@@ -84,6 +84,16 @@ class TestController extends Controller
              $city = $this->geo();
              $Content = $this->getweather($city);
              $this->info($postarray,$Content);
+        }else if($postarray->EventKey='V1001_TODAY_bd'){
+            $code=$this->getuserinfo();
+            Log::info('---调用授权---',$code);
+            if (!empty($code)) {
+                $Content="绑定成功";
+                $this->info($postarray,$Content);
+            }else{
+                $Content="绑定失败";
+                $this->info($postarray,$Content);
+            }
         }
         $openid = $postarray->FromUserName;//获取发送方的 openid
         $url = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=".$access_token."&openid=".$openid."&lang=zh_CN";
@@ -182,8 +192,6 @@ class TestController extends Controller
         $file_name = rtrim($file_name,'"');
         $file_path = $adddir.$file_name;
         $client->get($url,['save_to'=>$file_path]);
-
-
     }
     public function info($postarray,$Content){
         $ToUserName=$postarray->FromUserName;
@@ -311,22 +319,54 @@ class TestController extends Controller
         curl_close($ch);    //关闭
         return $output;
  }
- private function checkSignature()
-{
-    $signature = $_GET["signature"];
-    $timestamp = $_GET["timestamp"];
-    $nonce = $_GET["nonce"];
-    
-    $token = 'pwd';
-    $tmpArr = array($token, $timestamp, $nonce);
-    sort($tmpArr, SORT_STRING);
-    $tmpStr = implode( $tmpArr );
-    $tmpStr = sha1( $tmpStr );
-    
-    if( $tmpStr == $signature ){
-        return true;
-    }else{
-        return false;
+     private function checkSignature(){
+        $signature = $_GET["signature"];
+        $timestamp = $_GET["timestamp"];
+        $nonce = $_GET["nonce"];
+        
+        $token = 'pwd';
+        $tmpArr = array($token, $timestamp, $nonce);
+        sort($tmpArr, SORT_STRING);
+        $tmpStr = implode( $tmpArr );
+        $tmpStr = sha1( $tmpStr );
+        
+        if( $tmpStr == $signature ){
+            return true;
+        }else{
+            return false;
+        }
     }
-}
+    public function getuserinfo(){
+        //加密
+        $redirect_uri = urlencode("http://2004weixin.259775.top/getuserid");
+        $str = "ABCDEFGHIGKLMNOPQRSTUVWN1234567890qwertyuiopasdfghjklzxcvbnm";
+        $str = substr(str_shuffle($str),0,3);
+        $url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=".env('WX_APPID')."&redirect_uri=".$redirect_uri."&response_type=code&scope=snsapi_userinfo&state=".$str."#wechat_redirect";
+        header("location:".$url);
+    }
+    //静默授权/普通授权
+    public function getuserid(){
+        $code = request()->code;
+        $url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=".env('WX_APPID')."&secret=".env('WX_APPSE')."&code=$code&grant_type=authorization_code";
+        $refresh_token = file_get_contents($url);
+        Log::info("==个人信息==".$refresh_token);
+        $res = json_decode($refresh_token,true);
+        $access_token = $res["access_token"];
+        $openid = $res["openid"];
+        if($res["scope"]=="snsapi_base"){
+            echo $res["openid"];exit;
+        }else{
+            $users = "https://api.weixin.qq.com/sns/userinfo?access_token=$access_token&openid=$openid&lang=zh_CN";
+            $userss = file_get_contents($users);
+            $url = "";
+            Log::info("============普通授权============".$userss);
+            $users = json_decode($userss,true);
+            return $users;
+//            return RedirectToAction("weixinlogin", "UserController");
+//            header("location:".$url);
+//            return redirect('/'.$users["name"]);
+
+//            return view("home.index",["users",$users]);
+        }
+    }
 }

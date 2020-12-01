@@ -84,17 +84,24 @@ Route::any("access","TestController@access");
 Route::any("admin","TestController@admin");
 Route::any("code_token","TestController@code_token");
 Route::any("create","TestController@create");//创建菜单
+Route::any("getuserid","TestController@getuserid");
 
 
 
 Route::get("goods","GoodsController@goods");
-Route::get("api/login","GoodsController@login");
+// Route::get("api/login","GoodsController@login");
 
 
 
-Route::get("api/test","CateController@test");
-Route::get("api/cate","GoodsController@cate");
-Route::get("api/goodslist","GoodsController@goodslist");
-Route::get("api/cart","GoodsController@cart");
-Route::get("api/detaildo","GoodsController@detaildo");
-Route::post("api/goodslogin","GoodsController@goodslogin");
+//小程序接口测试
+	Route::prefix("/api")->group(function(){
+		Route::get("/userinfo",'Admin\LoginController@userinfo');
+		Route::get("/login",'Admin\LoginController@login');
+		Route::get("/actionWxLogin",'Admin\LoginController@actionWxLogin');
+		Route::get("/goods",'Admin\LoginController@goods');
+		Route::get("/detail",'Admin\LoginController@detail');
+		Route::get("/cart",'Admin\LoginController@cart')->middleware("checkLogin");
+		Route::get("/carts",'Admin\LoginController@carts');
+		Route::get("/coll",'Admin\LoginController@coll')->middleware("checkLogin");
+		Route::get("/ee",'Admin\LoginController@ee');
+	});

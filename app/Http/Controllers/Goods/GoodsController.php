@@ -147,7 +147,4 @@ class GoodsController extends Controller
     	// dd($data);
     	return $data;
     }
-
-
 }
-
